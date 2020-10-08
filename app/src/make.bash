@@ -10,7 +10,6 @@ TARGET=$DIR/bin
 
 try mkdir -p $TARGET/armeabi-v7a $TARGET/arm64-v8a
 
-try cp $DIR/spp/spp_arm_7 $TARGET/armeabi-v7a/libspp.so
-try cp $DIR/spp/spp_android_arm64 $TARGET/arm64-v8a/libspp.so
+try cp $DIR/spp/spp-shadowsocks-plugin $TARGET/arm64-v8a/libspp.so
 
 echo "Successfully build spp"
