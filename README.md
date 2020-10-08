@@ -21,5 +21,6 @@
 ```
 * 编译
 ```
+# rm app/build -rf
 # docker run --rm -u root -v ${PWD}:/build -w /build shadowsocks/android-ndk-go ./gradlew assembleDebug
 ```
