@@ -1,4 +1,0 @@
-[submodule "src/spp"]
-	path = app/src/spp
-	url = https://github.com/esrrhs/spp-shadowsocks-plugin.git
-	branch = master
