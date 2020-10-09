@@ -12,19 +12,39 @@
      +------------+                    +---------------------------+
 ```
 
+# 特性
+* 支持多种传输协议，除了常见的tcp、kcp、quic，还有自定义的rudp、ricmp、rhttp
+* 底层协议支持加密压缩，默认已经开启
+
 # 编译
 * clone代码
 ```
 # git clone https://github.com/esrrhs/spp-shadowsocks-plugin-android.git
 # cd spp-shadowsocks-plugin-android
 # git submodule update --init --recursive
+# chmod a+rwx ./ -R
 ```
 * 编译
 ```
-# rm app/build -rf
 # docker run --rm -u root -v ${PWD}:/build -w /build shadowsocks/android-ndk-go ./gradlew assembleDebug
 ```
-* 查看运行日志
+* 查看运行日志，需要下载[platform-tools](https://developer.android.com/studio/releases/platform-tools)
 ```
 # adb.exe logcat -s spp
 ```
+
+# 使用
+* 安装shadowsocks android，[地址](https://github.com/shadowsocks/shadowsocks-android)
+* 安装spp插件，[地址](https://github.com/esrrhs/spp-shadowsocks-plugin-android/releases)
+* 在shadowsocks插件里，选择spp
+* 配置填入proto协议，key密码。更多参数点击?，或者直接访问[spp](https://github.com/esrrhs/spp)查看
+```
+proto=rudp;key=abcdef
+```
+
+# 故障排除
+* Q：无法启动，点击报错
+* A：检查spp的配置是否正确
+* 
+* Q：启动正常，连不上网
+* A：首先确定不带spp，是否可以。然后看看spp服务器和客户端的key和proto是否一致
