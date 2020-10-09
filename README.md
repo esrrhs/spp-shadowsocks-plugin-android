@@ -13,7 +13,7 @@
 ```
 
 # 特性
-* 支持多种传输协议，除了常见的tcp、kcp、quic，还有自定义的rudp、ricmp、rhttp
+* 支持多种传输协议，除了常见的tcp、kcp、quic，还有自定义的rudp、rhttp、ricmp（非root手机不支持）
 * 底层协议支持加密压缩，默认已经开启
 
 # 编译
