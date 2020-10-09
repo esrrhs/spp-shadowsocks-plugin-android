@@ -41,6 +41,7 @@
 ```
 proto=rudp;key=abcdef
 ```
+* shadowsocks服务器的配置参考spp-shadowsocks-plugin，[地址](https://github.com/esrrhs/spp-shadowsocks-plugin)
 
 # 故障排除
 * Q：无法启动，点击报错
