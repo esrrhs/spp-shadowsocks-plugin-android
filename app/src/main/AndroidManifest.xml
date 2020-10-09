@@ -23,7 +23,7 @@
             <meta-data android:name="com.github.shadowsocks.plugin.id"
                        android:value="spp"/>
             <meta-data android:name="com.github.shadowsocks.plugin.default_config"
-                       android:value="crypt=none;mode=normal;mtu=1200;nocomp;dscp=46;parityshard=0"/>
+                       android:value="proto=rudp;key=123456"/>
         </provider>
         <activity android:name=".HelpCallback"
                   android:theme="@style/Theme.AppCompat.Translucent">
