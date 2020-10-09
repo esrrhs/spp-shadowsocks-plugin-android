@@ -18,10 +18,10 @@
 # git clone https://github.com/esrrhs/spp-shadowsocks-plugin-android.git
 # cd spp-shadowsocks-plugin-android
 # git submodule update --init --recursive
+# chmod a+rwx ./ -R
 ```
 * 编译
 ```
-# rm app/build -rf
 # docker run --rm -u root -v ${PWD}:/build -w /build shadowsocks/android-ndk-go ./gradlew assembleDebug
 ```
 * 查看运行日志
