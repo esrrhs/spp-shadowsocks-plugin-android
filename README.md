@@ -24,3 +24,7 @@
 # rm app/build -rf
 # docker run --rm -u root -v ${PWD}:/build -w /build shadowsocks/android-ndk-go ./gradlew assembleDebug
 ```
+* 查看运行日志
+```
+# adb.exe logcat -s spp
+```
