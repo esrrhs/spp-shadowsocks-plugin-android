@@ -1,5 +1,5 @@
 # spp-shadowsocks-plugin-android
-[spp](https://github.com/esrrhs/spp)针对shadowsocks android的插件，依赖[spp-shadowsocks-plugin](https://github.com/esrrhs/spp-shadowsocks-plugin)，使用[go-engine conn](https://github.com/esrrhs/go-engine/tree/master/src/conn)做转发
+[spp](https://github.com/esrrhs/spp)针对shadowsocks android的插件，依赖[spp-shadowsocks-plugin](https://github.com/esrrhs/spp-shadowsocks-plugin)
 ```
      +------------+                    +---------------------------+
      |  SS Client +-- Local Loopback --+  Plugin Client (Tunnel)   +--+
@@ -13,8 +13,8 @@
 ```
 
 # 特性
-* 支持协议tcp、kcp、quic
-* 支持自定义协议rudp、rhttp、ricmp（非root手机不支持）
+* 支持协议tcp、kcp、quic，自定义协议rudp、rhttp、ricmp（非root手机不支持）
+* 支持加密压缩，默认关闭
 
 # 编译
 * clone代码
