@@ -21,8 +21,6 @@
 ```
 # git clone https://github.com/esrrhs/spp-shadowsocks-plugin-android.git
 # cd spp-shadowsocks-plugin-android
-# git submodule update --init --recursive
-# chmod a+rwx ./ -R
 ```
 * 编译
 ```
