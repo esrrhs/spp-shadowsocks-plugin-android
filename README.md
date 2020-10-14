@@ -1,5 +1,6 @@
 # spp-shadowsocks-plugin-android
 [spp](https://github.com/esrrhs/spp)针对shadowsocks android的插件，依赖[spp-shadowsocks-plugin](https://github.com/esrrhs/spp-shadowsocks-plugin)
+
 <a href="https://play.google.com/store/apps/details?id=com.github.shadowsocks.plugin.spp"><img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height="48"></a>
 ```
      +------------+                    +---------------------------+
