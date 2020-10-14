@@ -1,4 +1,12 @@
 # spp-shadowsocks-plugin-android
+
+[<img src="https://img.shields.io/github/license/esrrhs/spp-shadowsocks-plugin-android">](https://github.com/esrrhs/spp-shadowsocks-plugin-android)
+[<img src="https://img.shields.io/github/languages/top/esrrhs/spp-shadowsocks-plugin-android">](https://github.com/esrrhs/spp-shadowsocks-plugin-android)
+[![Go Report Card](https://goreportcard.com/badge/github.com/esrrhs/spp-shadowsocks-plugin-android)](https://goreportcard.com/report/github.com/esrrhs/spp-shadowsocks-plugin-android)
+[<img src="https://img.shields.io/github/v/release/esrrhs/spp-shadowsocks-plugin-android">](https://github.com/esrrhs/spp-shadowsocks-plugin-android/releases)
+[<img src="https://img.shields.io/github/downloads/esrrhs/spp-shadowsocks-plugin-android/total">](https://github.com/esrrhs/spp-shadowsocks-plugin-android/releases)
+[<img src="https://img.shields.io/github/workflow/status/esrrhs/spp-shadowsocks-plugin-android/Go">](https://github.com/esrrhs/spp-shadowsocks-plugin-android/actions)
+
 [spp](https://github.com/esrrhs/spp)针对shadowsocks android的插件，依赖[spp-shadowsocks-plugin](https://github.com/esrrhs/spp-shadowsocks-plugin)
 
 <a href="https://play.google.com/store/apps/details?id=com.github.shadowsocks.plugin.spp"><img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height="48"></a>
