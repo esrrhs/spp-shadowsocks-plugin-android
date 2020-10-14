@@ -42,7 +42,7 @@
 
 # 使用
 * 安装shadowsocks android，Google Play或者[地址](https://github.com/shadowsocks/shadowsocks-android)
-* 安装spp插件，[地址](https://github.com/esrrhs/spp-shadowsocks-plugin-android/releases)
+* 安装spp插件，Google Play或者[地址](https://github.com/esrrhs/spp-shadowsocks-plugin-android/releases)
 * 在shadowsocks插件里，选择spp
 * 配置填入proto协议，key密码。更多参数点击?，或者直接访问[spp](https://github.com/esrrhs/spp)查看
 ```
