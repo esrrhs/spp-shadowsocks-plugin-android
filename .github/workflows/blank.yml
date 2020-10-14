@@ -10,7 +10,6 @@ jobs:
     container: shadowsocks/android-ndk-go
     steps:
       - run: |
-          echo This job does specify a container.
-          echo It runs in the container instead of the VM.
+          ./gradlew assembleDebug
         name: Run in container
 
