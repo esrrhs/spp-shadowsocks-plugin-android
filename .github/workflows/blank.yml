@@ -5,16 +5,9 @@ name: CI
 on: [push]
     
 jobs:
-  vm:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo This job does not specify a container.
-          echo It runs directly on the virtual machine.
-        name: Run on VM
   container:
     runs-on: ubuntu-latest
-    container: node:10.16-jessie
+    container: shadowsocks/android-ndk-go
     steps:
       - run: |
           echo This job does specify a container.
