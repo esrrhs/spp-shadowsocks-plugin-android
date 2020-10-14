@@ -4,7 +4,7 @@
 [<img src="https://img.shields.io/github/languages/top/esrrhs/spp-shadowsocks-plugin-android">](https://github.com/esrrhs/spp-shadowsocks-plugin-android)
 [<img src="https://img.shields.io/github/v/release/esrrhs/spp-shadowsocks-plugin-android">](https://github.com/esrrhs/spp-shadowsocks-plugin-android/releases)
 [<img src="https://img.shields.io/github/downloads/esrrhs/spp-shadowsocks-plugin-android/total">](https://github.com/esrrhs/spp-shadowsocks-plugin-android/releases)
-[<img src="https://img.shields.io/github/workflow/status/esrrhs/spp-shadowsocks-plugin-android/Go">](https://github.com/esrrhs/spp-shadowsocks-plugin-android/actions)
+[<img src="https://img.shields.io/github/workflow/status/esrrhs/spp-shadowsocks-plugin-android/CI">](https://github.com/esrrhs/spp-shadowsocks-plugin-android/actions)
 
 [spp](https://github.com/esrrhs/spp)针对shadowsocks android的插件，依赖[spp-shadowsocks-plugin](https://github.com/esrrhs/spp-shadowsocks-plugin)
 
