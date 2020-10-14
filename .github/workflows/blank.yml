@@ -13,6 +13,6 @@ jobs:
         uses: actions/checkout@v1
 
       - run: |
-          ./gradlew assembleDebug
+          sudo ./gradlew assembleDebug
         name: Run in container
 
