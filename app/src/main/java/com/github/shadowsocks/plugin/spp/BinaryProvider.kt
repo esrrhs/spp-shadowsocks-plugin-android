@@ -11,9 +11,13 @@ class BinaryProvider : NativePluginProvider() {
     override fun populateFiles(provider: PathProvider) {
         provider.addPath("spp", 0b111101101)
     }
+
     override fun getExecutable() = context!!.applicationInfo.nativeLibraryDir + "/libspp.so"
-    override fun openFile(uri: Uri?): ParcelFileDescriptor = when (uri?.path) {
-        "/spp" -> ParcelFileDescriptor.open(File(getExecutable()), ParcelFileDescriptor.MODE_READ_ONLY)
+    override fun openFile(uri: Uri): ParcelFileDescriptor = when (uri.path) {
+        "/spp" -> ParcelFileDescriptor.open(
+            File(getExecutable()),
+            ParcelFileDescriptor.MODE_READ_ONLY
+        )
         else -> throw FileNotFoundException()
     }
 }
