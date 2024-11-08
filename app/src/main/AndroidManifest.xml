@@ -7,10 +7,11 @@
         android:required="false" />
     <application
         android:allowBackup="false"
+        android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher"
         android:label="spp">
         <provider
-            android:name=".BinaryProvider"
+            android:name="com.github.shadowsocks.plugin.spp.BinaryProvider"
             android:authorities="com.github.shadowsocks.plugin.spp.BinaryProvider"
             android:directBootAware="true"
             android:exported="true"
@@ -34,7 +35,8 @@
                 android:value="proto=rudp;key=123456" />
         </provider>
         <activity
-            android:name=".HelpCallback"
+            android:name="com.github.shadowsocks.plugin.spp.HelpCallback"
+            android:exported="true"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.github.shadowsocks.plugin.ACTION_HELP" />
