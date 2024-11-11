@@ -5,7 +5,7 @@ apply plugin: 'com.github.ben-manes.versions'
 buildscript {
     ext {
         kotlinVersion = '1.7.10'
-        minSdkVersion = 24
+        minSdkVersion = 33
     }
     repositories {
         google()
