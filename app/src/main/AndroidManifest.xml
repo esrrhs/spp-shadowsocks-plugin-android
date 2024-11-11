@@ -1,13 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.github.shadowsocks.plugin.spp">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
     <application
         android:allowBackup="false"
-        android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher"
         android:label="spp">
         <provider
@@ -32,7 +30,7 @@
                 android:value="spp" />
             <meta-data
                 android:name="com.github.shadowsocks.plugin.default_config"
-                android:value="proto=rudp;key=123456" />
+                android:value="proto=rudp" />
         </provider>
         <activity
             android:name="com.github.shadowsocks.plugin.spp.HelpCallback"
