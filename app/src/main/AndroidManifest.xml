@@ -1,36 +1,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-
+          xmlns:tools="http://schemas.android.com/tools"
+          android:installLocation="internalOnly">
     <uses-feature
-        android:name="android.hardware.touchscreen"
-        android:required="false" />
-    <application
-        android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
-        android:label="spp">
+            android:name="android.hardware.touchscreen"
+            android:required="false"/>
+    <application android:allowBackup="false"
+                 android:label="spp"
+                 android:icon="@mipmap/ic_launcher">
         <provider
-            android:name="com.github.shadowsocks.plugin.spp.BinaryProvider"
-            android:authorities="com.github.shadowsocks.plugin.spp.BinaryProvider"
-            android:directBootAware="true"
-            android:exported="true"
-            tools:ignore="ExportedContentProvider">
+                android:name=".BinaryProvider"
+                android:exported="true"
+                android:directBootAware="true"
+                android:authorities="com.github.shadowsocks.plugin.spp.BinaryProvider"
+                tools:ignore="ExportedContentProvider">
             <intent-filter>
-                <action android:name="com.github.shadowsocks.plugin.ACTION_NATIVE_PLUGIN" />
+                <action android:name="com.github.shadowsocks.plugin.ACTION_NATIVE_PLUGIN"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="com.github.shadowsocks.plugin.ACTION_NATIVE_PLUGIN" />
-                <data
-                    android:host="com.github.shadowsocks"
-                    android:pathPrefix="/spp"
-                    android:scheme="plugin" />
+                <action android:name="com.github.shadowsocks.plugin.ACTION_NATIVE_PLUGIN"/>
+                <data android:scheme="plugin"
+                      android:host="com.github.shadowsocks"
+                      android:path="/spp"/>
             </intent-filter>
-
-            <meta-data
-                android:name="com.github.shadowsocks.plugin.id"
-                android:value="spp" />
-            <meta-data
-                android:name="com.github.shadowsocks.plugin.default_config"
-                android:value="proto=rudp" />
+            <meta-data android:name="com.github.shadowsocks.plugin.id"
+                       android:value="spp"/>
+            <meta-data android:name="com.github.shadowsocks.plugin.id.aliases"
+                       android:value="spp"/>
+            <meta-data android:name="com.github.shadowsocks.plugin.executable_path"
+                       android:value="libspp.so"/>
         </provider>
         <activity
             android:name="com.github.shadowsocks.plugin.spp.HelpCallback"
