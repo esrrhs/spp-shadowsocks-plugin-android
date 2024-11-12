@@ -1,0 +1,3 @@
+[submodule "app/src/main/go/spp-shadowsocks-plugin"]
+	path = app/src/main/go/spp-shadowsocks-plugin
+	url = https://github.com/esrrhs/spp-shadowsocks-plugin.git

@@ -9,12 +9,11 @@ import java.io.FileNotFoundException
 
 class BinaryProvider : NativePluginProvider() {
     override fun populateFiles(provider: PathProvider) {
-        provider.addPath("spp", 0b111101101)
+        provider.addPath("spp-plugin", 0b111101101)
     }
-
     override fun getExecutable() = context!!.applicationInfo.nativeLibraryDir + "/libspp.so"
     override fun openFile(uri: Uri): ParcelFileDescriptor = when (uri.path) {
-        "/spp" -> ParcelFileDescriptor.open(File(getExecutable()), ParcelFileDescriptor.MODE_READ_ONLY)
+        "/spp-plugin" -> ParcelFileDescriptor.open(File(getExecutable()), ParcelFileDescriptor.MODE_READ_ONLY)
         else -> throw FileNotFoundException()
     }
 }
