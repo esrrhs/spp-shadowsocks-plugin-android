@@ -10,7 +10,7 @@ MIN_API="$1"
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 OUT_DIR="$ROOT/build/go"
 
-cd "$ROOT/src/main/go/spp-plugin"
+cd "$ROOT/src/main/go/spp-shadowsocks-plugin"
 BIN="libspp.so"
 for i in "${!ABIS[@]}"; do
     ABI="${ABIS[$i]}"
