@@ -12,9 +12,9 @@ OUT_DIR="$ROOT/build/go"
 
 cd "$ROOT/src/main/go/spp-shadowsocks-plugin"
 BIN="libspp.so"
+go mod tidy
 for i in "${!ABIS[@]}"; do
     ABI="${ABIS[$i]}"
-    [[ -f "${OUT_DIR}/${ABI}/${BIN}" ]] && continue
     echo "Build ${BIN} ${ABI}"
     mkdir -p ${OUT_DIR}/${ABI} \
     && env \
