@@ -41,7 +41,10 @@ android {
 
 tasks.register<Exec>("goBuild") {
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-        println("Warning: Building on Windows is not supported")
+        executable("cmd")
+        args("/c", "go-build.bat", android.defaultConfig.minSdk)
+        environment("ANDROID_HOME", android.sdkDirectory)
+        environment("ANDROID_NDK_HOME", android.ndkDirectory)
     } else {
         executable("/bin/bash")
         args("go-build.bash", android.defaultConfig.minSdk)
