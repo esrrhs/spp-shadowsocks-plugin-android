@@ -25,6 +25,36 @@
 * 支持加密压缩，默认关闭
 
 # 编译
+* 准备环境
+* 安装java
+```
+# dnf install java-17-openjdk-devel
+# sudo alternatives --config java
+# java -version
+# readlink -f $(which java)
+# export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+# export PATH=$JAVA_HOME/bin:$PATH
+```
+* 安装SDK
+```
+# mkdir -p ~/android-sdk/cmdline-tools
+# cd ~/android-sdk/cmdline-tools
+# wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+# unzip commandlinetools-linux-11076708_latest.zip
+# mv cmdline-tools latest
+# mkdir -p ~/android-sdk/cmdline-tools/latest
+# export ANDROID_HOME=$HOME/android-sdk
+# export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH
+# yes | sdkmanager --licenses
+# sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+```
+* 安装NDK
+```
+# sdkmanager "ndk;29.0.14206865"
+# export ANDROID_NDK_HOME=/root/android-sdk/ndk/29.0.14206865
+# export PATH=$ANDROID_NDK_HOME:$PATH
+```
+
 * clone代码
 ```
 # git clone https://github.com/esrrhs/spp-shadowsocks-plugin-android.git
@@ -32,11 +62,7 @@
 ```
 * 编译
 ```
-# docker run --rm -u root -v ${PWD}:/build -w /build shadowsocks/android-ndk-go ./gradlew assembleDebug
-```
-* 查看运行日志，需要下载[platform-tools](https://developer.android.com/studio/releases/platform-tools)
-```
-# adb.exe logcat -s spp
+./gradlew clean assembleRelease
 ```
 
 # 使用
