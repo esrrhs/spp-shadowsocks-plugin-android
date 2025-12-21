@@ -19,14 +19,19 @@ def getCurrentFlavor() {
 
 android {
     buildToolsVersion "35.0.0"
+    ndkVersion "29.0.14206865" // 显式指定
     compileSdkVersion 35
     defaultConfig {
         applicationId "com.github.shadowsocks.plugin.spp"
         minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion 34
-        versionCode 1000500
-        versionName "1.0.5"
+        targetSdkVersion 35
+        versionCode 1000600
+        versionName "1.0.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            // 指定支持的架构，减少 APK 体积
+            abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
+        }
     }
     buildTypes {
         release {
@@ -68,16 +73,16 @@ task goClean(type: Exec) {
     }
 }
 
-tasks.whenTaskAdded { task ->
-    if ((task.name == 'javaPreCompileDebug' ||
-            task.name == 'javaPreCompileRelease')) {
-        task.dependsOn(goBuild)
+project.afterEvaluate {
+    // 强制在编译最开始执行 Go 构建
+    tasks.named("preBuild").configure {
+        dependsOn(goBuild)
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation 'com.github.shadowsocks:plugin:2.0.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.6.2'
