@@ -75,6 +75,15 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
 
+# Signed APK output
+signed/
+
+# Keys and passwords
+*.jks
+*.keystore
+*.idsig
+pd
+
 # Version control
 vcs.xml
 
