@@ -1,0 +1,161 @@
+# Build signed APK/AAB, upload to Google Play, and publish a GitHub Release.
+#
+# Required GitHub Secrets:
+#   PLAY_SERVICE_ACCOUNT_JSON  - service account JSON (Play Console linked)
+#   SIGNING_KEYSTORE_BASE64    - base64 of release keystore
+#   SIGNING_KEYSTORE_PASSWORD  - keystore password
+#   SIGNING_KEY_ALIAS          - key alias (my-alias)
+#   SIGNING_KEY_PASSWORD       - key password (optional; defaults to store password)
+#
+# Triggers:
+#   - push tag v*  → Play production + GitHub Release
+#   - workflow_dispatch → choose Play track/status + GitHub Release
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      track:
+        description: "Play track"
+        required: true
+        default: internal
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+          - production
+      status:
+        description: "Release status"
+        required: true
+        default: draft
+        type: choice
+        options:
+          - draft
+          - completed
+      skip_play:
+        description: "Skip Google Play upload"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build, Play & GitHub Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - name: Install Android SDK packages
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-36" "build-tools;36.1.0"
+
+      - name: Decode signing keystore
+        run: |
+          echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 -d > "${RUNNER_TEMP}/release.jks"
+
+      - name: Grant Gradle permission
+        run: chmod +x gradlew
+
+      - name: Resolve version / track
+        id: meta
+        run: |
+          VER=$(grep -E 'versionName\s+"[^"]+"' app/build.gradle | head -n1 | sed -E 's/.*"([^"]+)".*/\1/')
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+          echo "tag=v${VER#v}" >> "$GITHUB_OUTPUT"
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "track=${{ inputs.track }}" >> "$GITHUB_OUTPUT"
+            echo "status=${{ inputs.status }}" >> "$GITHUB_OUTPUT"
+            echo "skip_play=${{ inputs.skip_play }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "track=production" >> "$GITHUB_OUTPUT"
+            echo "status=completed" >> "$GITHUB_OUTPUT"
+            echo "skip_play=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build signed APKs (ABI splits)
+        env:
+          SIGNING_KEYSTORE_PATH: ${{ runner.temp }}/release.jks
+          SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD || secrets.SIGNING_KEYSTORE_PASSWORD }}
+        run: ./gradlew clean assembleRelease --no-daemon
+
+      - name: Build signed App Bundle
+        env:
+          SIGNING_KEYSTORE_PATH: ${{ runner.temp }}/release.jks
+          SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD || secrets.SIGNING_KEYSTORE_PASSWORD }}
+        run: ./gradlew bundleRelease --no-daemon
+
+      - name: Collect release artifacts
+        id: arts
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/bundle/release/*.aab dist/
+          # Prefer gradle-signed APKs; fall back to unsigned if signing env missing
+          shopt -s nullglob
+          for f in app/build/outputs/apk/release/*-release.apk; do
+            cp "$f" dist/
+          done
+          if ! ls dist/*.apk >/dev/null 2>&1; then
+            for f in app/build/outputs/apk/release/*-release-unsigned.apk; do
+              base=$(basename "$f" -unsigned.apk)
+              cp "$f" "dist/${base}.apk"
+            done
+          fi
+          ls -lh dist/
+          echo "aab=$(ls dist/*.aab | head -n1)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload to Google Play
+        if: steps.meta.outputs.skip_play != 'true'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.github.shadowsocks.plugin.spp
+          releaseFiles: ${{ steps.arts.outputs.aab }}
+          tracks: ${{ steps.meta.outputs.track }}
+          status: ${{ steps.meta.outputs.status }}
+          releaseName: ${{ steps.meta.outputs.version }}
+          whatsNewDirectory: whatsnew
+          mappingFile: app/build/outputs/mapping/release/mapping.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || steps.meta.outputs.tag }}
+          name: ${{ steps.meta.outputs.version }}
+          body_path: whatsnew/whatsnew-zh-CN
+          draft: false
+          prerelease: false
+          files: dist/*
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
