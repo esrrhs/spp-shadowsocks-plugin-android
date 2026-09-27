@@ -5,7 +5,7 @@ apply plugin: 'com.github.ben-manes.versions'
 buildscript {
     ext {
         kotlinVersion = '2.2.21'
-        minSdkVersion = 23
+        minSdkVersion = 24
         targetSdkVersion = 36
     }
     repositories {
