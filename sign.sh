@@ -1,11 +1,34 @@
 #! /bin/sh
+set -e
 
-/root/android-sdk/build-tools/35.0.0/apksigner sign --ks my-release-key.jks --out app-armeabi-v7a-release-signed.apk ./app/build/outputs/apk/release/app-armeabi-v7a-release-unsigned.apk
+KS="${KS:-/root/my-release-key.jks}"
+KS_PASS_FILE="${KS_PASS_FILE:-/root/pd}"
+KS_ALIAS="${KS_ALIAS:-my-alias}"
+APKSIGNER="${APKSIGNER:-/root/android-sdk/build-tools/36.1.0/apksigner}"
+OUT_DIR="${OUT_DIR:-signed}"
+IN_DIR="${IN_DIR:-./app/build/outputs/apk/release}"
 
-/root/android-sdk/build-tools/35.0.0/apksigner sign --ks my-release-key.jks --out app-arm64-v8a-release-signed.apk ./app/build/outputs/apk/release/app-arm64-v8a-release-unsigned.apk
+if [ ! -f "$KS" ]; then
+  echo "keystore not found: $KS" >&2
+  exit 1
+fi
+if [ ! -f "$KS_PASS_FILE" ]; then
+  echo "keystore password file not found: $KS_PASS_FILE" >&2
+  exit 1
+fi
 
-/root/android-sdk/build-tools/35.0.0/apksigner sign --ks my-release-key.jks --out app-x86_64-release-signed.apk ./app/build/outputs/apk/release/app-x86_64-release-unsigned.apk
+PASS=$(cat "$KS_PASS_FILE")
+mkdir -p "$OUT_DIR"
 
-/root/android-sdk/build-tools/35.0.0/apksigner sign --ks my-release-key.jks --out app-x86-release-signed.apk ./app/build/outputs/apk/release/app-x86-release-unsigned.apk
-
-/root/android-sdk/build-tools/35.0.0/apksigner sign --ks my-release-key.jks --out app-universal-release-signed.apk ./app/build/outputs/apk/release/app-universal-release-unsigned.apk
+for abi in armeabi-v7a arm64-v8a x86_64 x86 universal; do
+  in="$IN_DIR/app-${abi}-release-unsigned.apk"
+  out="$OUT_DIR/app-${abi}-release-signed.apk"
+  "$APKSIGNER" sign \
+    --ks "$KS" \
+    --ks-key-alias "$KS_ALIAS" \
+    --ks-pass "pass:${PASS}" \
+    --key-pass "pass:${PASS}" \
+    --out "$out" \
+    "$in"
+  echo "signed: $out"
+done
