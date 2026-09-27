@@ -1,3 +1,4 @@
 - Target Android 16 (API 36) for Google Play requirements
 - Update bundled spp-shadowsocks-plugin to v0.8.0 / latest spp
 - Auth key is now required; keep it in sync with the server
+- Raise minSdk to 24 (Play automatic protection)
