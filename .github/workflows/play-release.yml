@@ -1,0 +1,121 @@
+# Build signed AAB and upload to Google Play.
+#
+# Required GitHub Secrets:
+#   PLAY_SERVICE_ACCOUNT_JSON  - service account JSON (Play Console linked)
+#   SIGNING_KEYSTORE_BASE64    - base64 of /root/my-release-key.jks
+#                                (base64 -w0 my-release-key.jks)
+#   SIGNING_KEYSTORE_PASSWORD  - keystore password
+#   SIGNING_KEY_ALIAS          - key alias (my-alias)
+#   SIGNING_KEY_PASSWORD       - key password (optional; defaults to store password)
+#
+# Setup (one-time):
+# 1. Google Cloud: enable "Google Play Android Developer API"
+# 2. Create a service account + JSON key
+# 3. Play Console → Users and permissions → Invite the service account email
+#    with permission to release apps (至少「发布到正式版」或先用内部测试轨）
+# 4. Add the secrets above to this repo
+#
+# Recommended first run: workflow_dispatch with track=internal, status=draft
+
+name: Play Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      track:
+        description: "Play track"
+        required: true
+        default: internal
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+          - production
+      status:
+        description: "Release status"
+        required: true
+        default: draft
+        type: choice
+        options:
+          - draft
+          - completed
+
+permissions:
+  contents: read
+
+jobs:
+  play-release:
+    name: Build & upload to Play
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        run: |
+          sdkmanager "platforms;android-36" "build-tools;36.1.0"
+          yes | sdkmanager --licenses >/dev/null || true
+
+      - name: Decode signing keystore
+        run: |
+          echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 -d > "${RUNNER_TEMP}/release.jks"
+
+      - name: Grant Gradle permission
+        run: chmod +x gradlew
+
+      - name: Build signed release bundle
+        env:
+          SIGNING_KEYSTORE_PATH: ${{ runner.temp }}/release.jks
+          SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD || secrets.SIGNING_KEYSTORE_PASSWORD }}
+        run: ./gradlew clean bundleRelease --no-daemon
+
+      - name: Locate AAB
+        id: aab
+        run: |
+          AAB=$(ls app/build/outputs/bundle/release/*.aab | head -n1)
+          echo "path=$AAB" >> "$GITHUB_OUTPUT"
+          ls -lh "$AAB"
+
+      - name: Resolve track/status
+        id: meta
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "track=${{ inputs.track }}" >> "$GITHUB_OUTPUT"
+            echo "status=${{ inputs.status }}" >> "$GITHUB_OUTPUT"
+          else
+            # Tag push defaults to production completed; override via workflow_dispatch if needed
+            echo "track=production" >> "$GITHUB_OUTPUT"
+            echo "status=completed" >> "$GITHUB_OUTPUT"
+          fi
+          VER=$(grep -E 'versionName\s+"[^"]+"' app/build.gradle | head -n1 | sed -E 's/.*"([^"]+)".*/\1/')
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+
+      - name: Upload to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.github.shadowsocks.plugin.spp
+          releaseFiles: ${{ steps.aab.outputs.path }}
+          tracks: ${{ steps.meta.outputs.track }}
+          status: ${{ steps.meta.outputs.status }}
+          releaseName: ${{ steps.meta.outputs.version }}
+          whatsNewDirectory: whatsnew
+          mappingFile: app/build/outputs/mapping/release/mapping.txt

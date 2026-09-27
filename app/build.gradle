@@ -18,16 +18,16 @@ def getCurrentFlavor() {
 }
 
 android {
-    buildToolsVersion "35.0.0"
+    buildToolsVersion "36.1.0"
     ndkVersion "29.0.14206865" // 显式指定
-    compileSdkVersion 35
+    compileSdkVersion 36
     defaultConfig {
         applicationId "com.github.shadowsocks.plugin.spp"
         minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion 35
-        versionCode 1000800
-        versionName "1.1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        targetSdkVersion 36
+        versionCode 1000900
+        versionName "1.1.1"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // 指定支持的架构，减少 APK 体积
             abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
@@ -43,11 +43,32 @@ android {
         jvmTarget = '17'
     }
 
+    // Optional release signing from env (used by GitHub Actions / local sign)
+    def envStoreFile = System.getenv("SIGNING_KEYSTORE_PATH")
+    def envStorePassword = System.getenv("SIGNING_KEYSTORE_PASSWORD")
+    def envKeyAlias = System.getenv("SIGNING_KEY_ALIAS")
+    def envKeyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: envStorePassword
+    def hasReleaseSigning = envStoreFile && envStorePassword && envKeyAlias
+
+    if (hasReleaseSigning) {
+        signingConfigs {
+            release {
+                storeFile file(envStoreFile)
+                storePassword envStorePassword
+                keyAlias envKeyAlias
+                keyPassword envKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
         }
     }
     splits {
@@ -64,6 +85,9 @@ android {
         jniLibs {
             useLegacyPackaging true
         }
+    }
+    buildFeatures {
+        buildConfig true
     }
 }
 
@@ -97,8 +121,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation 'com.github.shadowsocks:plugin:2.0.1'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test:runner:1.6.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation 'androidx.test:runner:1.7.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
 }
 
 ext.abiCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2, x86: 3, x86_64: 4]

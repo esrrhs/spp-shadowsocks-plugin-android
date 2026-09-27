@@ -21,8 +21,10 @@
 ```
 
 # 特性
-* 支持协议tcp、kcp、quic，自定义协议rudp、rhttp、ricmp（非root手机不支持）
-* 支持加密压缩，默认关闭
+* 基于 [spp-shadowsocks-plugin](https://github.com/esrrhs/spp-shadowsocks-plugin) v0.8.0 / [spp](https://github.com/esrrhs/spp) 最新版本
+* 支持协议 tcp、kcp、quic，自定义协议 rudp、rhttp、ricmp（非 root 手机不支持 ricmp）
+* 鉴权 `key` 必填；整帧加密 `encrypt` 默认关闭，可按需开启
+* 支持压缩，默认关闭
 
 # 编译
 * 准备环境
@@ -46,7 +48,7 @@
 # export ANDROID_HOME=$HOME/android-sdk
 # export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH
 # yes | sdkmanager --licenses
-# sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+# sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.1.0"
 ```
 * 安装NDK
 ```
@@ -69,15 +71,15 @@
 * 安装shadowsocks android，Google Play或者[地址](https://github.com/shadowsocks/shadowsocks-android)
 * 安装spp插件，Google Play或者[地址](https://github.com/esrrhs/spp-shadowsocks-plugin-android/releases)
 * 在shadowsocks插件里，选择spp
-* 配置填入proto协议。更多参数点击?，或者直接访问[spp](https://github.com/esrrhs/spp)查看
+* 配置至少填写 `key`（与服务器一致）和 `proto`。更多参数点击?，或直接访问[spp](https://github.com/esrrhs/spp) / [spp-shadowsocks-plugin](https://github.com/esrrhs/spp-shadowsocks-plugin)
 ```
-proto=rudp
+proto=rudp;key=your-auth-key
 ```
-* shadowsocks服务器的配置参考spp-shadowsocks-plugin，[地址](https://github.com/esrrhs/spp-shadowsocks-plugin)
+* shadowsocks 服务器侧同样需要配置相同的 `key` / `proto`，参考 [spp-shadowsocks-plugin](https://github.com/esrrhs/spp-shadowsocks-plugin)
 
 # 故障排除
 * Q：无法启动，点击报错
-* A：检查spp的配置是否正确
-* 
+* A：检查是否配置了非空且足够强的 `key`（不能为空，也不能用 `123456`/`password` 等弱密钥），以及其它 spp 参数是否正确
+
 * Q：启动正常，连不上网
-* A：首先确定不带spp，是否可以。然后看看spp服务器和客户端的key和proto是否一致
+* A：先确认不带 spp 能否连通；再核对服务器与客户端的 `key`、`proto`（以及如有配置的 `encrypt`）是否一致

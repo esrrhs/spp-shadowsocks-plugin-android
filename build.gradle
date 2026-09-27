@@ -4,9 +4,9 @@ apply plugin: 'com.github.ben-manes.versions'
 
 buildscript {
     ext {
-        kotlinVersion = '2.0.21'
+        kotlinVersion = '2.2.21'
         minSdkVersion = 23
-        targetSdkVersion = 35
+        targetSdkVersion = 36
     }
     repositories {
         google()
