@@ -25,7 +25,7 @@ android {
         applicationId "com.github.shadowsocks.plugin.spp"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion 36
-        versionCode 1000900
+        versionCode 1000905
         versionName "1.1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
