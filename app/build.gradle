@@ -25,7 +25,8 @@ android {
         applicationId "com.github.shadowsocks.plugin.spp"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion 36
-        versionCode 1000905
+        def envVersionCode = System.getenv("VERSION_CODE")
+        versionCode envVersionCode ? envVersionCode.toInteger() : 1000906
         versionName "1.1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
