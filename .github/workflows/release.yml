@@ -42,6 +42,11 @@ on:
         required: false
         default: false
         type: boolean
+      version_code:
+        description: "Version code override (leave empty to use default)"
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: write
@@ -93,14 +98,17 @@ jobs:
             echo "track=${{ inputs.track }}" >> "$GITHUB_OUTPUT"
             echo "status=${{ inputs.status }}" >> "$GITHUB_OUTPUT"
             echo "skip_play=${{ inputs.skip_play }}" >> "$GITHUB_OUTPUT"
+            echo "version_code=${{ inputs.version_code }}" >> "$GITHUB_OUTPUT"
           else
             echo "track=production" >> "$GITHUB_OUTPUT"
             echo "status=completed" >> "$GITHUB_OUTPUT"
             echo "skip_play=false" >> "$GITHUB_OUTPUT"
+            echo "version_code=" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Build signed APKs (ABI splits)
         env:
+          VERSION_CODE: ${{ steps.meta.outputs.version_code }}
           SIGNING_KEYSTORE_PATH: ${{ runner.temp }}/release.jks
           SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
@@ -109,6 +117,7 @@ jobs:
 
       - name: Build signed App Bundle
         env:
+          VERSION_CODE: ${{ steps.meta.outputs.version_code }}
           SIGNING_KEYSTORE_PATH: ${{ runner.temp }}/release.jks
           SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
@@ -134,19 +143,6 @@ jobs:
           ls -lh dist/
           echo "aab=$(ls dist/*.aab | head -n1)" >> "$GITHUB_OUTPUT"
 
-      - name: Upload to Google Play
-        if: steps.meta.outputs.skip_play != 'true'
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: com.github.shadowsocks.plugin.spp
-          releaseFiles: ${{ steps.arts.outputs.aab }}
-          tracks: ${{ steps.meta.outputs.track }}
-          status: ${{ steps.meta.outputs.status }}
-          releaseName: ${{ steps.meta.outputs.version }}
-          whatsNewDirectory: whatsnew
-          mappingFile: app/build/outputs/mapping/release/mapping.txt
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -159,3 +155,23 @@ jobs:
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload to Google Play
+        if: steps.meta.outputs.skip_play != 'true'
+        continue-on-error: true
+        id: play_upload
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.github.shadowsocks.plugin.spp
+          releaseFiles: ${{ steps.arts.outputs.aab }}
+          tracks: ${{ steps.meta.outputs.track }}
+          status: ${{ steps.meta.outputs.status }}
+          releaseName: ${{ steps.meta.outputs.version }}
+          whatsNewDirectory: whatsnew
+          mappingFile: app/build/outputs/mapping/release/mapping.txt
+
+      - name: Check Play Upload Result
+        if: steps.meta.outputs.skip_play != 'true' && steps.play_upload.outcome != 'success'
+        run: |
+          echo "::warning::Google Play upload ended with outcome: ${{ steps.play_upload.outcome }}. Please check logs above if Play update is required."
