@@ -26,8 +26,8 @@ android {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion 36
         def envVersionCode = System.getenv("VERSION_CODE")
-        versionCode envVersionCode ? envVersionCode.toInteger() : 1000906
-        versionName "1.1.1"
+        versionCode envVersionCode ? envVersionCode.toInteger() : 1000907
+        versionName "1.1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // 指定支持的架构，减少 APK 体积
