@@ -26,8 +26,8 @@ android {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion 36
         def envVersionCode = System.getenv("VERSION_CODE")
-        versionCode envVersionCode ? envVersionCode.toInteger() : 1000907
-        versionName "1.1.2"
+        versionCode envVersionCode ? envVersionCode.toInteger() : 1000908
+        versionName "1.1.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // 指定支持的架构，减少 APK 体积
@@ -44,11 +44,16 @@ android {
         jvmTarget = '17'
     }
 
-    // Optional release signing from env (used by GitHub Actions / local sign)
-    def envStoreFile = System.getenv("SIGNING_KEYSTORE_PATH")
-    def envStorePassword = System.getenv("SIGNING_KEYSTORE_PASSWORD")
-    def envKeyAlias = System.getenv("SIGNING_KEY_ALIAS")
-    def envKeyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: envStorePassword
+    // Optional release signing from env (used by GitHub Actions / local sign) or keystore.properties
+    def propsFile = rootProject.file("keystore.properties")
+    def props = new Properties()
+    if (propsFile.exists()) {
+        props.load(propsFile.newDataInputStream())
+    }
+    def envStoreFile = System.getenv("SIGNING_KEYSTORE_PATH") ?: props.getProperty("storeFile")
+    def envStorePassword = System.getenv("SIGNING_KEYSTORE_PASSWORD") ?: props.getProperty("storePassword")
+    def envKeyAlias = System.getenv("SIGNING_KEY_ALIAS") ?: props.getProperty("keyAlias")
+    def envKeyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: props.getProperty("keyPassword") ?: envStorePassword
     def hasReleaseSigning = envStoreFile && envStorePassword && envKeyAlias
 
     if (hasReleaseSigning) {
