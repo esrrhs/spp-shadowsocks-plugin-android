@@ -21,7 +21,7 @@
 ```
 
 # 特性
-* 基于 [spp-shadowsocks-plugin](https://github.com/esrrhs/spp-shadowsocks-plugin) v0.8.0 / [spp](https://github.com/esrrhs/spp) 最新版本
+* 基于 [spp-shadowsocks-plugin](https://github.com/esrrhs/spp-shadowsocks-plugin) v0.8.1 / [spp](https://github.com/esrrhs/spp) 最新版本
 * 支持协议 tcp、kcp、quic，自定义协议 rudp、rhttp、ricmp（非 root 手机不支持 ricmp）
 * 鉴权 `key` 必填；整帧加密 `encrypt` 默认关闭，可按需开启
 * 支持压缩，默认关闭
