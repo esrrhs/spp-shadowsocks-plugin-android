@@ -52,7 +52,7 @@ def main():
 
         release_body = {
             'releases': [{
-                'name': '1.1.3',
+                'name': '1.1.4',
                 'versionCodes': [str(version_code)],
                 'status': 'completed',
                 'releaseNotes': [

@@ -25,7 +25,7 @@ A [SIP003](https://shadowsocks.org/doc/sip003.html) compliant plugin for [Shadow
 
 ## Features
 
-* **Latest SPP Core**: Powered by bundled [spp-shadowsocks-plugin](https://github.com/esrrhs/spp-shadowsocks-plugin) v0.8.1 with the latest [SPP](https://github.com/esrrhs/spp) engine.
+* **Latest SPP Core**: Powered by bundled [spp-shadowsocks-plugin](https://github.com/esrrhs/spp-shadowsocks-plugin) v0.8.2 with the latest [SPP](https://github.com/esrrhs/spp) engine.
 * **Versatile Underlay Protocols**: Supports standard `tcp`, `kcp`, `quic`, as well as reliable custom protocols `rudp`, `rhttp`, and `ricmp` (*ricmp requires root privileges on Android*).
 * **Robust Authentication**: Mandatory pre-shared `key` challenge-response authentication prevents unauthorized probing.
 * **Optional Encryption & Compression**: Seamlessly integrate data compression (`compress`) and full-frame encryption (`encrypt`) under the transport layer (disabled by default).
